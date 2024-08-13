@@ -1,0 +1,10 @@
+{
+    "menu.title": "MRI FPS Menu",
+    "menu.description": "Opções FPS/Gráficos.",
+    "menu.timecycleDefault": "Padrão",
+    "menu.timecycleCinema": "Opção #1",
+    "menu.timecycleYell": "Opção #2",
+    "menu.timecycleTunnel": "Opção #3",
+    "menu.timecyclePower": "Opção #4",
+    "menu.timecycleModifierDescription": "Status: %s"
+}
