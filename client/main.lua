@@ -3,6 +3,7 @@ local timecycleModifier = "default"
 local lodDistance = nil
 local lightsCutOff = 1.0
 local shadowsCutOff = 1.0
+local presetFps = "default"
 
 local function ifThen(condition, ifTrue, ifFalse)
     if condition then
@@ -32,10 +33,10 @@ local function setDistance(args)
     local input = lib.inputDialog(locale("menu.distanceTitle"), {
         {
             type = "slider",
-            min = 0.1,
-            max = 200.0,
-            step = 0.5,
-            default = lodDistance
+            min = 0.01,
+            max = 50.0,
+            step = 0.1,
+            default = lodDistance or 1.0
         }, {
             type = "checkbox",
             label = locale("menu.reset"),
@@ -59,10 +60,10 @@ local function setLights(args)
     local input = lib.inputDialog(locale("menu.lightsTitle"), {
         {
             type = "slider",
-            min = 0.5,
-            max = 200.0,
-            step = 0.5,
-            default = lightsCutOff
+            min = 0.01,
+            max = 50.0,
+            step = 0.1,
+            default = lightsCutOff or 1.0
         }, {
             type = "checkbox",
             label = locale("menu.reset"),
@@ -86,10 +87,10 @@ local function setShadows(args)
     local input = lib.inputDialog(locale("menu.shadowsTitle"), {
         {
             type = "slider",
-            min = 0.1,
+            min = 0.01,
             max = 1.0,
             step = 0.1,
-            default = shadowsCutOff
+            default = shadowsCutOff or 1.0
         }, {
             type = "checkbox",
             label = locale("menu.reset"),
@@ -104,6 +105,17 @@ local function setShadows(args)
             SetResourceKvp("mri_Qfps:ShadowsCutOff", shadowsCutOff)
         end
     end
+    if args and args.callback then
+        args.callback()
+    end
+end
+
+local function setPresetFps(args)
+    if args and args.preset then
+        presetFps = args.preset
+        SetResourceKvp("mri_Qfps:PresetFps", presetFps)
+    end
+
     if args and args.callback then
         args.callback()
     end
@@ -145,6 +157,63 @@ local function gfxMenu()
     lib.showContext(ctx.id)
 end
 
+local function presetMenu()
+    local ctx = {
+        id = "menu_preset",
+        menu = "menu_fps",
+        title = locale("menu.presetTitle"),
+        description = locale("menu.presetDescription"),
+        options = {{
+            title = locale("menu.reset"),
+            description = locale("menu.resetDescription"),
+            icon = ifThen(presetFps == "default", "toggle-on", "toggle-off"),
+            iconColor = ifThen(presetFps == "default", ColorScheme.success, ColorScheme.danger),
+            iconAnimation = Config.IconAnimation,
+            onSelect = setPresetFps,
+            args = {
+                preset = "default",
+                callback = presetMenu
+            }
+        }, {
+            title = locale("menu.presetULow"),
+            description = locale("menu.presetULowDescription"),
+            icon = ifThen(presetFps == "ulow", "toggle-on", "toggle-off"),
+            iconColor = ifThen(presetFps == "ulow", ColorScheme.success, ColorScheme.danger),
+            iconAnimation = Config.IconAnimation,
+            onSelect = setPresetFps,
+            args = {
+                preset = "ulow",
+                callback = presetMenu
+            }
+        }, {
+            title = locale("menu.presetLow"),
+            description = locale("menu.presetLowDescription"),
+            icon = ifThen(presetFps == "low", "toggle-on", "toggle-off"),
+            iconColor = ifThen(presetFps == "low", ColorScheme.success, ColorScheme.danger),
+            iconAnimation = Config.IconAnimation,
+            onSelect = setPresetFps,
+            args = {
+                preset = "low",
+                callback = presetMenu
+            }
+        }, {
+            title = locale("menu.presetMedium"),
+            description = locale("menu.presetMediumDescription"),
+            icon = ifThen(presetFps == "medium", "toggle-on", "toggle-off"),
+            iconColor = ifThen(presetFps == "medium", ColorScheme.success, ColorScheme.danger),
+            iconAnimation = Config.IconAnimation,
+            onSelect = setPresetFps,
+            args = {
+                preset = "medium",
+                callback = presetMenu
+            }
+        }}
+    }
+
+    lib.registerContext(ctx)
+    lib.showContext(ctx.id)
+end
+
 local function fpsMenu()
     local ctx = {
         id = "menu_fps",
@@ -178,6 +247,12 @@ local function fpsMenu()
             args = {
                 callback = fpsMenu
             }
+        }, {
+            title = locale("menu.presetTitle"),
+            description = locale("menu.presetDescription"),
+            icon = "list-check",
+            iconAnimation = Config.IconAnimation,
+            onSelect = presetMenu,
         }}
     }
 
@@ -223,35 +298,94 @@ local function startFpsBoost()
                 OverrideLodscaleThisFrame(lodDistance)
             end
 
-            if lightsCutOff ~= nil then
-                SetLightsCutoffDistanceTweak(lightsCutOff)
-                SetFlashLightFadeDistance(lightsCutOff)
-            end
+            if presetFps == "default" then
+                SetArtificialLightsState(false)
 
-            if lastLightVal ~= lightsCutOff then
-                lastLightVal = lightsCutOff
-                DisableVehicleDistantlights(lightsCutOff <= 1.0)
-            end
-
-            if shadowsCutOff ~= nil then
-                if shadowsCutOff > 0 then
-                    RopeDrawShadowEnabled(true)
-                    CascadeShadowsClearShadowSampleType()
-                    CascadeShadowsSetAircraftMode(true)
-                    CascadeShadowsEnableEntityTracker(true)
-                    CascadeShadowsSetDynamicDepthMode(true)
-                    CascadeShadowsInitSession()
-                    SetPedAoBlobRendering(cache.ped, true)
+                if lightsCutOff ~= nil then
+                    SetLightsCutoffDistanceTweak(lightsCutOff)
+                    SetFlashLightFadeDistance(lightsCutOff)
                 else
-                    RopeDrawShadowEnabled(false)
-                    CascadeShadowsSetAircraftMode(false)
-                    CascadeShadowsEnableEntityTracker(false)
-                    CascadeShadowsSetDynamicDepthMode(false)
-                    SetPedAoBlobRendering(cache.ped, false)
+                    SetFlashLightFadeDistance(10.0)
+                    SetLightsCutoffDistanceTweak(10.0)
                 end
-                CascadeShadowsSetEntityTrackerScale(shadowsCutOff)
-                CascadeShadowsSetDynamicDepthValue(shadowsCutOff)
-                CascadeShadowsSetCascadeBoundsScale(shadowsCutOff)
+
+                if lastLightVal ~= lightsCutOff then
+                    lastLightVal = lightsCutOff
+                    DisableVehicleDistantlights(lightsCutOff <= 1.0)
+                end
+
+                if shadowsCutOff ~= nil then
+                    if shadowsCutOff > 0 then
+                        RopeDrawShadowEnabled(true)
+                        CascadeShadowsClearShadowSampleType()
+                        CascadeShadowsSetAircraftMode(true)
+                        CascadeShadowsEnableEntityTracker(true)
+                        CascadeShadowsSetDynamicDepthMode(true)
+                        CascadeShadowsInitSession()
+                        SetPedAoBlobRendering(cache.ped, true)
+                        CascadeShadowsSetEntityTrackerScale(shadowsCutOff)
+                        CascadeShadowsSetDynamicDepthValue(shadowsCutOff)
+                        CascadeShadowsSetCascadeBoundsScale(shadowsCutOff)
+                    else
+                        RopeDrawShadowEnabled(false)
+                        CascadeShadowsSetAircraftMode(false)
+                        CascadeShadowsEnableEntityTracker(false)
+                        CascadeShadowsSetDynamicDepthMode(false)
+                        SetPedAoBlobRendering(cache.ped, false)
+                        CascadeShadowsSetEntityTrackerScale(shadowsCutOff)
+                        CascadeShadowsSetDynamicDepthValue(shadowsCutOff)
+                        CascadeShadowsSetCascadeBoundsScale(shadowsCutOff)
+                    end
+                else
+                    RopeDrawShadowEnabled(true)
+
+                    CascadeShadowsSetAircraftMode(true)
+                    CascadeShadowsEnableEntityTracker(false)
+                    CascadeShadowsSetDynamicDepthMode(true)
+                    CascadeShadowsSetEntityTrackerScale(5.0)
+                    CascadeShadowsSetDynamicDepthValue(5.0)
+                    CascadeShadowsSetCascadeBoundsScale(5.0)
+                end
+            elseif presetFps == "ulow" then
+                RopeDrawShadowEnabled(false)
+
+                CascadeShadowsClearShadowSampleType()
+                CascadeShadowsSetAircraftMode(false)
+                CascadeShadowsEnableEntityTracker(true)
+                CascadeShadowsSetDynamicDepthMode(false)
+                CascadeShadowsSetEntityTrackerScale(0.0)
+                CascadeShadowsSetDynamicDepthValue(0.0)
+                CascadeShadowsSetCascadeBoundsScale(0.0)
+
+                SetFlashLightFadeDistance(0.0)
+                SetLightsCutoffDistanceTweak(0.0)
+            elseif presetFps == "low" then
+                RopeDrawShadowEnabled(false)
+
+                CascadeShadowsClearShadowSampleType()
+                CascadeShadowsSetAircraftMode(false)
+                CascadeShadowsEnableEntityTracker(true)
+                CascadeShadowsSetDynamicDepthMode(false)
+                CascadeShadowsSetEntityTrackerScale(0.0)
+                CascadeShadowsSetDynamicDepthValue(0.0)
+                CascadeShadowsSetCascadeBoundsScale(0.0)
+
+                SetFlashLightFadeDistance(5.0)
+                SetLightsCutoffDistanceTweak(5.0)
+            elseif presetFps == "medium" then
+                RopeDrawShadowEnabled(true)
+
+                CascadeShadowsClearShadowSampleType()
+                CascadeShadowsSetAircraftMode(false)
+                CascadeShadowsEnableEntityTracker(true)
+                CascadeShadowsSetDynamicDepthMode(false)
+                CascadeShadowsSetEntityTrackerScale(5.0)
+                CascadeShadowsSetDynamicDepthValue(3.0)
+                CascadeShadowsSetCascadeBoundsScale(3.0)
+
+                SetFlashLightFadeDistance(3.0)
+                SetLightsCutoffDistanceTweak(3.0)
+                SetArtificialLightsState(false)
             end
             Wait(0)
         end
@@ -263,6 +397,7 @@ local function init()
     lodDistance = tonumber(GetResourceKvpString("mri_Qfps:LodDistance")) or nil
     lightsCutOff = tonumber(GetResourceKvpString("mri_Qfps:LightsCutoff")) or nil
     shadowsCutOff = tonumber(GetResourceKvpString("mri_Qfps:ShadowsCutoff")) or 1.0
+    presetFps = GetResourceKvpString("mri_Qfps:PresetFps") or "default"
     setPlayerTimecycleModifier({cycle = timecycleModifier})
     startFpsBoost()
 end
