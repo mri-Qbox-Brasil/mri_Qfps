@@ -412,6 +412,12 @@ AddEventHandler("onResourceStart", function(resource)
     end
 end)
 
+AddEventHandler("onResourceStop", function(resource)
+    if resource == GetCurrentResourceName() then
+        exports["mri_Qbox"]:RemovePlayerMenu(locale("menu.mriFpsTitle"))
+    end
+end)
+
 if GetResourceState("mri_Qbox") == "started" then
     exports["mri_Qbox"]:AddPlayerMenu({
         title = locale("menu.mriFpsTitle"),
