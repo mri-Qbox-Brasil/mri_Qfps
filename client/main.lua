@@ -65,8 +65,9 @@ local function Optimize(status)
 		CascadeShadowsSetEntityTrackerScale(0.0)
 		CascadeShadowsSetDynamicDepthValue(0.0)
 		CascadeShadowsSetCascadeBoundsScale(0.0)
-		SetFlashLightFadeDistance(0.0)
-		SetLightsCutoffDistanceTweak(0.0)
+		SetFlashLightFadeDistance(50.0)
+		SetLightsCutoffDistanceTweak(50.0)
+		DisableVehicleDistantlights(true)
 		DistantCopCarSirens(false)
 		SetPedAoBlobRendering(ped, false)
 	else
@@ -81,6 +82,7 @@ local function Optimize(status)
 		CascadeShadowsSetCascadeBoundsScale(0.0)
 		SetFlashLightFadeDistance(0.0)
 		SetLightsCutoffDistanceTweak(0.0)
+		DisableVehicleDistantlights(false)
 		DistantCopCarSirens(false)
 		SetPedAoBlobRendering(ped, true)
         DisplayRadar(true)
@@ -268,9 +270,6 @@ local function startFpsBoost()
         local lastPresetFps = nil
         local lastShadowsCutOff = nil
 
-        if lightsCutOff ~= nil then
-            DisableVehicleDistantlights(lightsCutOff <= 1.0)
-        end
         while true do
             if lodDistance ~= nil then
                 OverrideLodscaleThisFrame(lodDistance)
@@ -283,13 +282,19 @@ local function startFpsBoost()
 
                 if presetFps == "default" then
 
-                    if lightsCutOff ~= nil then
-                        SetLightsCutoffDistanceTweak(lightsCutOff)
-                        SetFlashLightFadeDistance(lightsCutOff)
-                        DisableVehicleDistantlights(lightsCutOff <= 1.0)
+                    -- Slider < 1.0 culls distant light sources for fps. Never below 50m:
+                    -- headlights sit ~10m from the 3rd person camera and blink when the
+                    -- cutoff boundary crosses them. 1.0+ or no saved value = game default
+                    -- (0.0 disables the tweak).
+                    if lightsCutOff ~= nil and lightsCutOff < 1.0 then
+                        local cutoff = 50.0 + (lightsCutOff * 200.0)
+                        SetLightsCutoffDistanceTweak(cutoff)
+                        SetFlashLightFadeDistance(cutoff)
+                        DisableVehicleDistantlights(true)
                     else
-                        SetFlashLightFadeDistance(10.0)
-                        SetLightsCutoffDistanceTweak(10.0)
+                        SetLightsCutoffDistanceTweak(0.0)
+                        SetFlashLightFadeDistance(0.0)
+                        DisableVehicleDistantlights(false)
                     end
 
                     if shadowsCutOff ~= nil then
@@ -335,8 +340,9 @@ local function startFpsBoost()
                     CascadeShadowsSetDynamicDepthValue(0.0)
                     CascadeShadowsSetCascadeBoundsScale(0.0)
 
-                    SetFlashLightFadeDistance(0.0)
-                    SetLightsCutoffDistanceTweak(0.0)
+                    SetFlashLightFadeDistance(50.0)
+                    SetLightsCutoffDistanceTweak(50.0)
+                    DisableVehicleDistantlights(true)
                 elseif presetFps == "low" then
                     RopeDrawShadowEnabled(false)
 
@@ -348,8 +354,9 @@ local function startFpsBoost()
                     CascadeShadowsSetDynamicDepthValue(0.0)
                     CascadeShadowsSetCascadeBoundsScale(0.0)
 
-                    SetFlashLightFadeDistance(5.0)
-                    SetLightsCutoffDistanceTweak(5.0)
+                    SetFlashLightFadeDistance(100.0)
+                    SetLightsCutoffDistanceTweak(100.0)
+                    DisableVehicleDistantlights(true)
                 elseif presetFps == "medium" then
                     RopeDrawShadowEnabled(true)
 
@@ -361,8 +368,9 @@ local function startFpsBoost()
                     CascadeShadowsSetDynamicDepthValue(3.0)
                     CascadeShadowsSetCascadeBoundsScale(3.0)
 
-                    SetFlashLightFadeDistance(3.0)
-                    SetLightsCutoffDistanceTweak(3.0)
+                    SetFlashLightFadeDistance(150.0)
+                    SetLightsCutoffDistanceTweak(150.0)
+                    DisableVehicleDistantlights(false)
                 end
             end
 
@@ -375,7 +383,12 @@ local function startFpsBoost()
     end)
 end
 
+local hasInit = false
+
 local function init()
+    if hasInit then return end
+    hasInit = true
+
     timecycleModifier = GetResourceKvpString("mri_Qfps:TimecycleModifier") or "default"
     if Config.LoadingDistanceEnabled then
         lodDistance = tonumber(GetResourceKvpString("mri_Qfps:LodDistance")) or nil
@@ -453,11 +466,11 @@ RegisterNUICallback("setSliders", function(data, cb)
     end
     if data.lightsCutoff ~= nil then
         lightsCutOff = tonumber(data.lightsCutoff)
-        SetResourceKvp("mri_Qfps:LightsCutOff", tostring(lightsCutOff))
+        SetResourceKvp("mri_Qfps:LightsCutoff", tostring(lightsCutOff))
     end
     if data.shadowsCutoff ~= nil then
         shadowsCutOff = tonumber(data.shadowsCutoff)
-        SetResourceKvp("mri_Qfps:ShadowsCutOff", tostring(shadowsCutOff))
+        SetResourceKvp("mri_Qfps:ShadowsCutoff", tostring(shadowsCutOff))
     end
     cb("ok")
 end)
