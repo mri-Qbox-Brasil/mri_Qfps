@@ -3,39 +3,40 @@ game "gta5"
 lua54 "yes"
 use_experimental_fxv2_oal "yes"
 
-description "FPS Boost Script"
+name "mri_Qfps"
+description "Menu de FPS, filtros gráficos e mira customizada, com aba de ajustes no mri_Qadmin"
 author "GFive, GH & MRI Qbox"
-version "1.0.0"
+version "1.1.0"
+repository "https://github.com/mri-Qbox-Brasil/mri_Qfps"
 
 ox_lib "locale"
 
 shared_scripts {
     "@ox_lib/init.lua",
-    "shared/*.lua"
+    "shared/config.lua",
+    "shared/settings.lua",
 }
 
 server_scripts {
-    "@oxmysql/lib/MySQL.lua",
-    "server/*.lua"
+    "server/main.lua",
+    "server/settings.lua",
+    "server/report.lua",
 }
 
 client_scripts {
-    "@qbx_core/modules/playerdata.lua",
-    "client/*.lua"
+    "client/graphics.lua",
+    "client/metrics.lua",
+    "client/auto.lua",
+    "client/main.lua",
+}
+
+ui_page "html/index.html"
+
+files {
+    "locales/*.json",
+    "html/**/*",
 }
 
 dependencies {
     "ox_lib",
-}
-
-ui_page 'ui/dist/index.html'
-
-files {
-    "locales/*.json",
-    'ui/dist/index.html',
-	'ui/dist/assets/**',
-}
-
-dependencies {
-    "ox_lib"
 }

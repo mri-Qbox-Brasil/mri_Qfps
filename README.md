@@ -1,26 +1,32 @@
 # mri_Qfps
 
-Um script avançado e otimizado para o FiveM que combina aprimoramento de FPS corporativo com um sistema inédito de Mira Customizada (Crosshair) via NUI.
+Menu de FPS para o jogador (F9 do mri_Qbox): presets de desempenho, ajuste fino de distância de renderização, luzes e sombras, filtros de timecycle e uma mira customizada desenhada na NUI. O dono do servidor ajusta tudo na aba **FPS** do mri_Qadmin, sem mexer em arquivo nem reiniciar.
 
-## 🚀 Features Principais
+## Recursos
 
-### 1. FPS Boost & Otimização GFX
-- **Presets Rápidos:** Opção de perfis (ex: `ulow`) que alteram nativamente a renderização pesada do GTA para otimizar ao máximo as taxas de quadros (FPS) para quem sofre com baixo desempenho.
-- **Micro-Gerenciamento Visual:** Sliders para controlar ativamente a distância de carregamento (`LOD Distance`), corte de luzes (`Lights Cutoff`) e distâncias de sombras (`Shadows Cutoff`).
-- **Persistência de Dados Lógica:** Salva os presets preferidos diretamente via `SetResourceKvp`, mantendo sua última configuração persistente sem depender de chamadas com o banco de dados do servidor.
+- **Presets de FPS:** Padrão, Médio, Baixo e Ultra baixo (este também faz a limpeza de efeitos pesados).
+- **Ajuste fino:** distância de renderização (LOD), luzes distantes e sombras.
+- **Filtros gráficos:** cinco timecycles prontos.
+- **Mira customizada:** tamanho, espessura, abertura, ponto central, cor, opacidade e contorno, com prévia ao vivo. Aparece só armado e mirando; o loop dorme fora de combate.
+- **Preferências por jogador:** tudo fica salvo no cliente (KVP).
+- **Tema da suíte:** `@mriqbox/ui-kit`, segue o `/uiconfig` e as cores da MRI ao vivo.
 
-### 2. Sistema de Mira Customizada (NUI Crosshair)
-Uma evolução total comparada a velhos scripts de crosshair em tela. Desenvolvida do zero para PvP e máxima responsividade:
-- **Zero Impacto:** A renderização da mira acontece puramente via CSS/React do lado NUI (Chromium).
-- **Detecção Inteligente:** Possui uma thread LUA com temporizadores de descanso dinâmicos (Sleep dinâmico de 500ms -> 50ms -> 0ms). O script **hiberna** para quem não está mirando/armado, reduzindo o uso de CPU.
-- **Supressão Otimizada vs Ghosting:** Previne a aparição ("flickering") da mira nativa do GTA V durante momentos de reações de tiro rápido (Quick-scope). 
-- **Preview Flutuante em Tempo Real:** Conforme você mexe na interface gráfica, você assiste as configurações de sua mira atuando ao vivo em um quadro espelhado externamente ao lado da UI.
-- **Customização Total de Geometria:** Modifique: Tamanho, Espessura, Abertura (Gap), Coração RGB, Opacidade nativa, e ative Contorno de foco.
+## Desenvolvimento
 
-## 💻 Tech Stack & Desenvolvimento
-- Interface gráfica elaborada utilizando **React**, **TypeScript**, **Vite** no *front-end* (`ui/`).
-- Integrado com os tokens visuais minimalistas e modernos da biblioteca `@mriqbox/ui-kit`.
-- Animações escalonadas baseadas em provedores de visibilidade integrados nativamente com os hooks do LUA escape-keybind.
+A fonte da NUI fica em `web/` e o build vai pra `html/`:
 
----
-> **Aviso de Build:** Para alterações no painel, abra o terminal no diretório `/ui/` e execute o comando `pnpm run build`. Levante o script em ambiente de testes para sincronizar.
+```
+cd web
+pnpm install
+pnpm build
+```
+
+`pnpm dev` abre o menu no navegador com dados de exemplo; `?embedded=1` mostra a aba do mri_Qadmin.
+
+Manual completo: [MANUAL.md](MANUAL.md).
+
+## Licença
+
+O código deste recurso é MIT com Commons Clause: pode usar, modificar e redistribuir à vontade, mas não pode vender, nem a versão original nem uma modificada. Texto completo em [LICENSE](LICENSE).
+
+O som do hitmarker (`web/src/assets/hit.wav`) é CC0, de [freesound.org/s/570335](https://freesound.org/s/570335/).

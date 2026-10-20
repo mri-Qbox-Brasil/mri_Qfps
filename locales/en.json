@@ -1,32 +1,263 @@
 {
-    "menu.mriFpsTitle": "MRI FPS Menu",
-    "menu.mriFpsDescription": "FPS/Graphics/Crosshair Options.",
-    "menu.gfxTitle": "MRI GFX",
-    "menu.gfxDescription": "Graphics Options.",
-    "menu.fpsTitle": "FPS Booster",
-    "menu.fpsDescription": "FPS Boost Options.",
-    "menu.distanceTitle": "Loading Distance",
-    "menu.distanceDescription": "Adjust loading distance.",
-    "menu.reset": "Reset",
-    "menu.resetDescription": "Reset all options.",
-    "menu.lightsTitle": "Lights",
-    "menu.lightsDescription": "Optimize Lights.",
-    "menu.shadowsTitle": "Shadows",
-    "menu.shadowsDescription": "Optimize Shadows.",
-    "menu.presetTitle": "Presets",
-    "menu.presetDescription": "Choose a preset.",
-    "menu.presetULow": "Ultra Low",
-    "menu.presetULowDescription": "Optimize for ultra low.",
-    "menu.presetLow": "Low",
-    "menu.presetLowDescription": "Optimize for low.",
-    "menu.presetMedium": "Medium",
-    "menu.presetMediumDescription": "Optimize for medium.",
-    "menu.timecycleDefault": "Default",
-    "menu.timecycleCinema": "Option #1",
-    "menu.timecycleYell": "Option #2",
-    "menu.timecycleTunnel": "Option #3",
-    "menu.timecyclePower": "Option #4",
-    "menu.timecycleModifierDescription": "Status: %s",
-    "menu.crosshairTitle": "Custom Crosshair",
-    "menu.crosshairDescription": "Customize your crosshair."
+    "menu.title": "Performance",
+    "menu.description": "FPS, graphics and crosshair options.",
+    "notify.ulow_enabled": "Cleanup and optimization system enabled.",
+    "plugin_description": "FPS menu, filters and crosshair settings.",
+    "ui": {
+        "title": "Performance",
+        "subtitle": "Tune the game for your computer",
+        "close": "Close",
+        "tabs": {
+            "fps": "FPS",
+            "gfx": "GFX",
+            "crosshair": "Crosshair",
+            "hit": "Hits",
+            "metrics": "Measure",
+            "auto": "Auto"
+        },
+        "fps": {
+            "presets": "Quick presets",
+            "preset": {
+                "default": "Default",
+                "default_desc": "Gaming PC",
+                "medium": "Medium",
+                "medium_desc": "Average PC",
+                "low": "Low",
+                "low_desc": "Weak PC",
+                "ulow": "Ultra low",
+                "ulow_desc": "Potato PC"
+            },
+            "custom": "Custom: the values below match no preset.",
+            "lod_locked": "The server locked the render distance.",
+            "steps": {
+                "lod": {
+                    "min": "Lowest",
+                    "short": "Short",
+                    "medium": "Medium",
+                    "default": "Default",
+                    "long": "Long"
+                },
+                "lights": {
+                    "min": "Lowest",
+                    "short": "Short",
+                    "medium": "Medium",
+                    "default": "Default"
+                },
+                "shadows": {
+                    "off": "Off",
+                    "light": "Light",
+                    "default": "Default"
+                },
+                "scale": {
+                    "default": "Default",
+                    "off": "Off"
+                }
+            },
+            "meter_hint": "Green bars: how much FPS it tends to give. Amber: how much the picture loses.",
+            "city_locked": "The server locked city lights at the default.",
+            "group": {
+                "world": "World",
+                "lights": "Lights",
+                "effects": "Shadows and effects"
+            },
+            "opt": {
+                "lod": "Render distance",
+                "entityLod": "People and car detail",
+                "decals": "Marks on the ground",
+                "flatWater": "Still water",
+                "lights": "Light cutoff",
+                "cityLights": "City lights",
+                "coronas": "Lamp glow",
+                "distantLights": "Lights on the horizon",
+                "vehicleLights": "Headlights and car lights",
+                "shadows": "Shadows",
+                "puddles": "Puddles and reflections",
+                "postFx": "Post processing"
+            },
+            "layer": {
+                "afk": "You are away: the game dropped to the minimum and comes back on the first move.",
+                "pause": "Pause menu open: the game is saving while you are not looking.",
+                "auto": "Auto boost raised the preset because of low FPS."
+            }
+        },
+        "gfx": {
+            "title": "Graphics filter (timecycle)",
+            "description": "Pick a visual post-processing filter",
+            "cycle": {
+                "default": "Default",
+                "default_desc": "Game default graphics",
+                "cinema": "Cinema",
+                "cinema_desc": "Cinematic filter",
+                "yell_tunnel_nodirect": "Option #2",
+                "yell_tunnel_nodirect_desc": "Golden/yellow tone",
+                "tunnel": "Option #3",
+                "tunnel_desc": "Tunnel style",
+                "MP_Powerplay_blend": "Option #4",
+                "MP_Powerplay_blend_desc": "Powerplay"
+            }
+        },
+        "crosshair": {
+            "custom": "Custom crosshair",
+            "presets": "Quick presets",
+            "preset": {
+                "dot": "Dot",
+                "small": "Small cross",
+                "gap": "Gapped cross",
+                "cross_dot": "Cross and dot",
+                "t": "T style",
+                "circle": "Circle",
+                "circle_cross": "Circle and cross",
+                "sniper": "Thin reticle"
+            },
+            "shape": "Shape",
+            "thickness": "Thickness",
+            "gap": "Gap",
+            "dot": "Center dot",
+            "color": "Color",
+            "colors": {
+                "green": "Green",
+                "white": "White",
+                "red": "Red",
+                "yellow": "Yellow",
+                "cyan": "Cyan",
+                "pink": "Pink"
+            },
+            "alpha": "Opacity",
+            "outline": "Black outline",
+            "outline_thickness": "Outline thickness",
+            "reset": "RESET CROSSHAIR TO DEFAULT",
+            "custom_desc": "Replaces the GTA crosshair while you aim a weapon.",
+            "parts": "What shows",
+            "lines": "Lines",
+            "circle": "Circle",
+            "t_style": "No top line",
+            "length": "Length",
+            "dot_size": "Dot size",
+            "circle_size": "Circle radius",
+            "visibility": "Outline and opacity"
+        },
+        "admin": {
+            "title": "Performance",
+            "description": "Applied at once for every player.",
+            "settings": "Settings",
+            "loading_distance": "Render distance",
+            "loading_distance_desc": "Lets players change the render distance (LOD) in the FPS menu.",
+            "icon_animation": "F9 icon animation",
+            "icon_animation_desc": "The Performance icon fades in the player menu.",
+            "hit_note": "In roleplay, a hit marker shows whether a shot went through cover. Turn it on only if the city allows it.",
+            "hit_marker": "Allow hit marker",
+            "hit_marker_desc": "Each player picks the style and whether to see it in the FPS menu.",
+            "hit_sound": "Allow hit sound",
+            "hit_sound_desc": "Each player picks the sound and volume in the FPS menu.",
+            "players": "Players",
+            "players_title": "FPS of everyone online, worst first.",
+            "players_desc": "Each player sends their FPS every 30 seconds.",
+            "players_note": "Dimmed row: the player just joined and has not sent FPS yet.",
+            "apply_all": "Apply to all",
+            "refresh": "Refresh",
+            "forced": "Preset applied.",
+            "force_failed": "Could not apply (preset locked or player left).",
+            "no_players": "Nobody online.",
+            "custom": "Custom",
+            "col": {
+                "name": "Name",
+                "preset": "Preset"
+            },
+            "restrict_note": "What players may use. A locked preset falls back to Default at once.",
+            "allow_preset": "Allow the {preset} preset",
+            "lock_city_lights": "Lock city lights",
+            "lock_city_lights_desc": "Darkening the city at night is an edge in roleplay; locked, it stays at the default."
+        },
+        "reset": "Reset",
+        "done": "Done",
+        "hit": {
+            "locked": "The server turned off hit markers and hit sounds.",
+            "marker": "Marker",
+            "marker_on": "Show marker",
+            "marker_desc": "An X on the crosshair when your shot hits someone.",
+            "style": {
+                "cross": "Classic",
+                "compact": "Compact",
+                "ring": "Ring"
+            },
+            "colors": "White on the body, yellow on the head and a larger red one on a kill.",
+            "sound": "Sound",
+            "volume": "Volume",
+            "volumes": {
+                "low": "Low",
+                "medium": "Medium",
+                "high": "High"
+            },
+            "test": "Test",
+            "kinds": {
+                "hit": "Body",
+                "head": "Head",
+                "kill": "Kill"
+            },
+            "sound_on": "Play sound",
+            "sound_desc": "A short hitmarker tick when your shot lands. Higher on the head and doubled on a kill."
+        },
+        "preview": {
+            "test": "Test on my PC",
+            "result": "Test result: {preset}",
+            "before": "Before",
+            "after": "With the preset",
+            "keep": "Keep preset",
+            "revert": "Leave as it was",
+            "measuring": "Measuring FPS (step {step} of 2). Do not move the camera."
+        },
+        "metrics": {
+            "now": "FPS now",
+            "spark": "Last minute",
+            "avg": "Average",
+            "min": "Minimum",
+            "max": "Maximum",
+            "frametime": "Frametime",
+            "low_hint": "1% low is the FPS of the worst moments. Far below the average means stutter.",
+            "state": {
+                "great": "Great",
+                "good": "Good",
+                "weak": "Weak",
+                "bad": "Bad"
+            },
+            "hud": "On-screen counter",
+            "hud_on": "Show counter",
+            "hud_desc": "A small FPS in a corner of the screen, outside the menu.",
+            "position": "Position",
+            "corner": {
+                "top-left": "Top left",
+                "top-right": "Top right",
+                "bottom-left": "Bottom left",
+                "bottom-right": "Bottom right"
+            },
+            "show_low": "1% low",
+            "show_frametime": "Frametime"
+        },
+        "auto": {
+            "intro": "Cuts where nobody is looking. It is a temporary layer over your preset and is never saved.",
+            "idle": "When you are not playing",
+            "pause": "Save in the pause menu",
+            "pause_desc": "With the map or menu open, the world behind drops to the minimum.",
+            "afk": "Away mode",
+            "afk_desc": "Standing still, the game drops to the minimum. The first move brings everything back.",
+            "afk_minutes": "Away after",
+            "interior": "Ease up indoors",
+            "interior_desc": "Inside an interior, fewer people and cars are simulated outside.",
+            "boost": "Low FPS",
+            "boost_on": "Auto boost",
+            "boost_desc": "Raises the preset on its own when FPS drops and goes back when it recovers.",
+            "boost_below": "Raise below",
+            "boost_above": "Go back above",
+            "alert": "Low FPS warning",
+            "alert_desc": "Warns after 15 seconds in a row under the line.",
+            "alert_below": "Warn below",
+            "cleanup": "Cleanup",
+            "cleanup_on": "Auto cleanup",
+            "cleanup_desc": "Removes bullet marks, blood, smoke and broken glass around you. Never during a firefight.",
+            "cleanup_every": "Every",
+            "cleanup_radius": "Radius"
+        }
+    },
+    "notify.low_fps": "Low FPS: %s on average lately. Try a lighter preset in the FPS menu.",
+    "notify.forced": "An admin applied the %s preset to your game."
 }
