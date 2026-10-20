@@ -2,7 +2,7 @@
 FpsAuto = {}
 
 FpsAuto.prefs = {
-    pauseSaver = true,
+    pauseSaver = false,
     afk = false,
     afkMinutes = 5,
     interior = false,

@@ -6,7 +6,7 @@ use_experimental_fxv2_oal "yes"
 name "mri_Qfps"
 description "Menu de FPS, filtros gráficos e mira customizada, com aba de ajustes no mri_Qadmin"
 author "GFive, GH & MRI Qbox"
-version "1.1.0"
+version "1.1.1"
 repository "https://github.com/mri-Qbox-Brasil/mri_Qfps"
 
 ox_lib "locale"
