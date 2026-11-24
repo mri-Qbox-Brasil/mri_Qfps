@@ -20,11 +20,15 @@ FpsAuto.prefs = {
 local IDLE_PRESET <const> = "ulow"
 local BOOST_COOLDOWN <const> = 30000
 local ALERT_COOLDOWN <const> = 120000
+-- the boost stops at this preset, and comes back this far above the line even if the saved option asks for more
+local BOOST_LIMIT <const> = "low"
+local BOOST_RETURN_MARGIN <const> = 15
 
 local paused, away = false, false
 local lastActive, lastCoords = GetGameTimer(), nil
 local boostLevel = nil
 local nextBoostCheck, nextAlert, nextCleanup, lowSince = 0, 0, 0, nil
+local seenRevision = 0
 
 local function setPrefs(prefs)
     if type(prefs) ~= "table" then return end
@@ -60,10 +64,15 @@ local function autoBoost(now)
         return
     end
     local base = presetIndex(FpsGraphics.preset())
-    -- the player picked a preset as light as the boost (or lighter): their choice shows at once
-    if boostLevel and boostLevel <= base then
-        boostLevel = nil
-        FpsGraphics.setLayer("auto", nil)
+    -- any choice in the panel shows at once and gets time to settle before the boost looks again
+    local revision = FpsGraphics.revision()
+    if revision ~= seenRevision then
+        seenRevision = revision
+        nextBoostCheck = now + BOOST_COOLDOWN
+        if boostLevel then
+            boostLevel = nil
+            FpsGraphics.setLayer("auto", nil)
+        end
     end
     if now < nextBoostCheck then return end
     local avg = FpsMetrics.average(10)
@@ -71,11 +80,12 @@ local function autoBoost(now)
 
     local level = boostLevel or base
     local target = level
-    if avg < p.boostBelow and level < #FpsGraphics.ORDER then
+    local limit = presetIndex(BOOST_LIMIT)
+    if avg < p.boostBelow and level < limit then
         target = level + 1
-        while target <= #FpsGraphics.ORDER and not FpsGraphics.presetAllowed(FpsGraphics.ORDER[target]) do target = target + 1 end
-        if target > #FpsGraphics.ORDER then target = level end
-    elseif avg > p.boostAbove and boostLevel then
+        while target <= limit and not FpsGraphics.presetAllowed(FpsGraphics.ORDER[target]) do target = target + 1 end
+        if target > limit then target = level end
+    elseif boostLevel and FpsMetrics.average(30) >= math.min(p.boostAbove, p.boostBelow + BOOST_RETURN_MARGIN) then
         target = level - 1
         while target > base and not FpsGraphics.presetAllowed(FpsGraphics.ORDER[target]) do target = target - 1 end
     end

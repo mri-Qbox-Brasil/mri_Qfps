@@ -213,7 +213,17 @@ end
 
 local function recompute()
     -- the strongest temporary layer wins: preview, then away, pause and auto boost
-    effective = layers.preview or layers.afk or layers.pause or layers.auto or user
+    local automatic = layers.afk or layers.pause or layers.auto
+    if layers.preview then
+        effective = layers.preview
+    elseif automatic then
+        -- automatic layers keep the player's map and entity detail (lod 0.1 turns nearby objects into low-LOD boxes)
+        effective = copy(automatic)
+        effective.lod = user.lod
+        effective.entityLod = user.entityLod
+    else
+        effective = user
+    end
     applyEffective()
 end
 
@@ -250,10 +260,18 @@ local function save()
     SetResourceKvp(KVP, json.encode({ preset = preset, values = user }))
 end
 
+-- counts the player's choices, so the auto boost can step aside when one is made
+local revision = 0
+
+function FpsGraphics.revision()
+    return revision
+end
+
 local function commit(values, id)
     local wasUltraLow = preset == "ulow"
     user = values
     preset = id
+    revision = revision + 1
     save()
     recompute()
     if preset == "ulow" and not wasUltraLow then

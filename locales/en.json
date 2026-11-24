@@ -245,7 +245,7 @@
             "interior_desc": "Inside an interior, fewer people and cars are simulated outside.",
             "boost": "Low FPS",
             "boost_on": "Auto boost",
-            "boost_desc": "Raises the preset on its own when FPS drops and goes back when it recovers.",
+            "boost_desc": "Cuts lights, shadows and effects when FPS drops and gives them back when it recovers. Does not touch map distance.",
             "boost_below": "Raise below",
             "boost_above": "Go back above",
             "alert": "Low FPS warning",
