@@ -1,4 +1,5 @@
 local timecycleModifier = "default"
+local timecycleStrength = 1.0
 
 -- Crosshair state
 local crosshairEnabled = false
@@ -11,6 +12,17 @@ local TIMECYCLES <const> = {
     yell_tunnel_nodirect = false,
     tunnel = false,
     MP_Powerplay_blend = "reflection_correct_ambient",
+    -- Rockstar Editor filters and adjustments, character tints and noir
+    rply_saturation = false, rply_saturation_neg = false, rply_contrast = false, rply_contrast_neg = false,
+    rply_brightness = false, rply_brightness_neg = false, rply_vignette = false, FranklinColorCodeBright = false,
+    MichaelColorCodeBright = false, TrevorColorCodeBright = false, NeutralColorCodeBright = false, NG_filmnoir_BW01 = false,
+    NG_filmnoir_BW02 = false, NG_filmic01 = false, NG_filmic02 = false, NG_filmic03 = false,
+    NG_filmic04 = false, NG_filmic05 = false, NG_filmic06 = false, NG_filmic07 = false,
+    NG_filmic08 = false, NG_filmic09 = false, NG_filmic10 = false, NG_filmic11 = false,
+    NG_filmic12 = false, NG_filmic13 = false, NG_filmic14 = false, NG_filmic15 = false,
+    NG_filmic16 = false, NG_filmic17 = false, NG_filmic18 = false, NG_filmic19 = false,
+    NG_filmic20 = false, NG_filmic21 = false, NG_filmic22 = false, NG_filmic23 = false,
+    NG_filmic24 = false, NG_filmic25 = false,
 }
 
 local function applyTimecycle()
@@ -20,16 +32,25 @@ local function applyTimecycle()
         return
     end
     SetTimecycleModifier(timecycleModifier)
+    SetTimecycleModifierStrength(timecycleStrength)
     local extra = TIMECYCLES[timecycleModifier]
     if extra then
         SetExtraTimecycleModifier(extra)
     end
 end
 
-local function setPlayerTimecycleModifier(cycle)
+local function readStrength(value)
+    value = tonumber(value)
+    if not value then return 1.0 end
+    return math.min(math.max(value + 0.0, 0.1), 1.0)
+end
+
+local function setPlayerTimecycleModifier(cycle, strength)
     if TIMECYCLES[cycle] == nil then return end
     timecycleModifier = cycle
+    timecycleStrength = readStrength(strength)
     SetResourceKvp("mri_Qfps:TimecycleModifier", cycle)
+    SetResourceKvpFloat("mri_Qfps:TimecycleStrength", timecycleStrength)
     applyTimecycle()
 end
 
@@ -246,6 +267,7 @@ local function openMenu()
             hud = FpsMetrics.hud,
             metrics = FpsMetrics.stats(),
             timecycle = timecycleModifier,
+            timecycleStrength = timecycleStrength,
             crosshair = chSettings,
             hitmarker = hitPrefs,
             hitAllowed = hitAllowed(),
@@ -287,6 +309,9 @@ local function init()
 
     timecycleModifier = GetResourceKvpString("mri_Qfps:TimecycleModifier") or "default"
     if TIMECYCLES[timecycleModifier] == nil then timecycleModifier = "default" end
+    -- 0.0 is what the KVP reads before a strength was ever saved
+    local savedStrength = GetResourceKvpFloat("mri_Qfps:TimecycleStrength")
+    timecycleStrength = savedStrength > 0 and readStrength(savedStrength) or 1.0
     if timecycleModifier ~= "default" then applyTimecycle() end
 
     FpsGraphics.load()
@@ -419,7 +444,7 @@ RegisterNUICallback("preview", function(data, cb)
 end)
 
 RegisterNUICallback("setTimecycle", function(data, cb)
-    setPlayerTimecycleModifier(data.cycle)
+    setPlayerTimecycleModifier(data.cycle, data.strength)
     cb(true)
 end)
 

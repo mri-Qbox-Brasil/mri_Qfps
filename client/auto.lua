@@ -8,7 +8,7 @@ FpsAuto.prefs = {
     interior = false,
     autoBoost = false,
     boostBelow = 45,
-    boostAbove = 90,
+    boostAbove = 60,
     alert = false,
     alertBelow = 30,
     cleanup = false,
@@ -20,7 +20,7 @@ FpsAuto.prefs = {
 local IDLE_PRESET <const> = "ulow"
 local BOOST_COOLDOWN <const> = 30000
 local ALERT_COOLDOWN <const> = 120000
--- the boost stops at this preset, and comes back this far above the line even if the saved option asks for more
+-- the boost stops at this preset; it goes back at least this far above the line, so it never flips back and forth
 local BOOST_LIMIT <const> = "low"
 local BOOST_RETURN_MARGIN <const> = 15
 
@@ -85,7 +85,7 @@ local function autoBoost(now)
         target = level + 1
         while target <= limit and not FpsGraphics.presetAllowed(FpsGraphics.ORDER[target]) do target = target + 1 end
         if target > limit then target = level end
-    elseif boostLevel and FpsMetrics.average(30) >= math.min(p.boostAbove, p.boostBelow + BOOST_RETURN_MARGIN) then
+    elseif boostLevel and FpsMetrics.average(30) >= math.max(p.boostAbove, p.boostBelow + BOOST_RETURN_MARGIN) then
         target = level - 1
         while target > base and not FpsGraphics.presetAllowed(FpsGraphics.ORDER[target]) do target = target - 1 end
     end

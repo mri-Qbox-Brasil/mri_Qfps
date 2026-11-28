@@ -6,7 +6,7 @@ Menu de FPS para o jogador (F9 do mri_Qbox): presets de desempenho, ajuste fino 
 
 - **Presets de FPS:** Padrão, Médio, Baixo e Ultra baixo (este também faz a limpeza de efeitos pesados).
 - **Ajuste fino:** distância de renderização (LOD), luzes distantes e sombras.
-- **Filtros gráficos:** cinco timecycles prontos.
+- **Filtros gráficos:** 43 timecycles em grupos (básicos, ajustes de imagem, cores, preto e branco, retrô e artísticos), com os 25 filtros do Rockstar Editor e intensidade de 25% a 100%.
 - **Mira customizada:** tamanho, espessura, abertura, ponto central, cor, opacidade e contorno, com prévia ao vivo. Aparece só armado e mirando; o loop dorme fora de combate.
 - **Preferências por jogador:** tudo fica salvo no cliente (KVP).
 - **Tema da suíte:** `@mriqbox/ui-kit`, segue o `/uiconfig` e as cores da MRI ao vivo.
